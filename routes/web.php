@@ -4,6 +4,7 @@ use App\Http\Controllers\Frontend\IndexController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\AdminProfileController;
+use App\Http\Controllers\Backend\AdminBrandController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +16,9 @@ use App\Http\Controllers\Backend\AdminProfileController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/test', function (){
+    echo  \Illuminate\Support\Facades\Hash::make(19171363);
+});
 
 
 Route::group(['prefix' => 'admin', 'middleware' => ['admin:admin']], function () {
@@ -29,12 +32,17 @@ Route::middleware(['auth:sanctum,admin', 'verified'])->get('/admin/dashboard', f
 })->name('dashboard');
 
 // Admin All Routes
-Route::get('/admin/logout', [AdminController::class, 'destroy'])->name('admin.logout');
-Route::get('/admin/profile', [AdminProfileController::class, 'profile'])->name('admin.profile');
-Route::get('/admin/profile/edit', [AdminProfileController::class, 'edit'])->name('admin.profile.edit');
-Route::post('/admin/profile/update', [AdminProfileController::class, 'update'])->name('admin.profile.update');
-Route::get('/admin/change/password', [AdminProfileController::class, 'changePassword'])->name('admin.change.password');
-Route::post('/admin/update/password', [AdminProfileController::class, 'updatePassword'])->name('admin.update.password');
+
+Route::group(['prefix'=>'admin'],function (){
+    Route::get('/logout', [AdminController::class, 'destroy'])->name('admin.logout');
+    Route::get('/profile', [AdminProfileController::class, 'profile'])->name('admin.profile');
+    Route::get('/profile/edit', [AdminProfileController::class, 'edit'])->name('admin.profile.edit');
+    Route::post('/profile/update', [AdminProfileController::class, 'update'])->name('admin.profile.update');
+    Route::get('/change/password', [AdminProfileController::class, 'changePassword'])->name('admin.change.password');
+    Route::post('/update/password', [AdminProfileController::class, 'updatePassword'])->name('admin.update.password');
+
+    Route::resource('brands', AdminBrandController::class, ['names' => 'admin.brands']);
+});
 
 // User All Routes
 Route::middleware(['auth:sanctum,web', 'verified'])->get('/dashboard', function () {

@@ -1,3 +1,8 @@
+@php
+    $path = request()->path();
+    $route = request()->route()->getName();
+@endphp
+
 <section class="sidebar">
 
     <div class="user-profile">
@@ -15,24 +20,26 @@
     <!-- sidebar menu-->
     <ul class="sidebar-menu" data-widget="tree">
 
-        <li>
-            <a href="index.html">
+        <li class="{{ $route == 'dashboard' ? 'active' : ''}}">
+            <a href="{{url('admin/dashboard')}}">
                 <i data-feather="pie-chart"></i>
                 <span>Dashboard</span>
             </a>
         </li>
 
-        <li class="treeview">
+        <li class="treeview {{ $path == 'admin/brands' ? 'active' : ''}}">
             <a href="#">
                 <i data-feather="message-circle"></i>
-                <span>Application</span>
+                <span>Brands</span>
                 <span class="pull-right-container">
               <i class="fa fa-angle-right pull-right"></i>
             </span>
             </a>
             <ul class="treeview-menu">
-                <li><a href="chat.html"><i class="ti-more"></i>Chat</a></li>
-                <li><a href="calendar.html"><i class="ti-more"></i>Calendar</a></li>
+                <li class="{{ $route == 'admin.brands.index' ? 'active' : ''}}">
+                    <a href="{{route('admin.brands.index')}}"><i class="ti-more"></i>All Brands</a>
+                </li>
+
             </ul>
         </li>
 
