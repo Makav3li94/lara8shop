@@ -24,81 +24,41 @@
         <section class="content">
             <div class="row">
 
-
-                <div class="col-8">
-
-                    <div class="box">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">All brands</h3>
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                            <div class="table-responsive">
-                                <table id="example1" class="table table-bordered table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>Name (EN)</th>
-                                        <th>Name (FA)</th>
-                                        <th>Image</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @forelse($brands as $key => $brand)
-                                        <tr>
-                                            <td>{{$brand->name}}</td>
-                                            <td>{{$brand->name_fa}}</td>
-                                            <td><img src="{{asset($brand->image)}}" width="70" alt="{{$brand->name}}"></td>
-                                            <td>
-                                                <a href="{{route('admin.brands.edit',$brand->id)}}"  class="btn btn-sm btn-warning">Edit</a>
-                                                <form id="delete_brand_{{$brand->id}}" action="{{route('admin.brands.destroy',$brand->id)}}" method="post">
-                                                    @csrf
-                                                    @method('delete')
-                                                    <input type="submit" onclick="deleteElement()" class="btn btn-sm btn-danger" value="Delete">
-
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        No Data
-                                    @endforelse
-
-
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th>Name (EN)</th>
-                                        <th>Name (FA)</th>
-                                        <th>Image</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                        <!-- /.box-body -->
-                    </div>
-                    <!-- /.box -->
-
-                    <!-- /.box -->
-                </div>
-
-                <div class="col-4">
+                <div class="col-12">
 
                     <div class="box">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Add Brand</h3>
+                            <h3 class="box-title">Edit Brand</h3>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
-                            <form method="post" action="{{route('admin.brands.store')}}" enctype="multipart/form-data">
+                            <form method="post" action="{{route('admin.subcategories.update',$subCategory)}}" enctype="multipart/form-data">
+                                @method('patch')
                                 @csrf
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-group">
+                                            <h5>Category <span class="text-danger">*</span></h5>
+                                            <div class="controls">
+                                                <select name="category_id" class="form-control" id="" required data-validation-required-message="This field is required">
+                                                    @foreach($categories as $category)
+                                                        <option value="{{$category->id}}" {{$category->id == $subCategory->category_id ? 'selected' : ''}}>{{$category->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @if($errors->has('category_id'))
+                                                <div class="form-control-feedback">
+                                                    <small>
+                                                        {{$errors->first('category_id')}}
+                                                    </small>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="form-group">
                                             <h5>Name (En) <span class="text-danger">*</span></h5>
                                             <div class="controls">
-                                                <input type="text" name="name" value="" class="form-control" required data-validation-required-message="This field is required">
+                                                <input type="text" name="name" value="{{$subCategory->name}}" class="form-control" required
+                                                       data-validation-required-message="This field is required">
                                             </div>
                                             @if($errors->has('name'))
                                                 <div class="form-control-feedback">
@@ -111,7 +71,8 @@
                                         <div class="form-group">
                                             <h5>Name (FA) <span class="text-danger">*</span></h5>
                                             <div class="controls">
-                                                <input type="text" name="name_fa" value="" class="form-control" required data-validation-required-message="This field is required">
+                                                <input type="text" name="name_fa" value="{{$subCategory->name_fa}}" class="form-control" required
+                                                       data-validation-required-message="This field is required">
                                             </div>
                                             @if($errors->has('name_fa'))
                                                 <div class="form-control-feedback">
@@ -122,9 +83,10 @@
                                             @endif
                                         </div>
                                         <div class="form-group">
-                                            <h5>Inage <span class="text-danger">*</span></h5>
+                                            <h5>Image <span class="text-danger">*</span></h5>
                                             <div class="controls">
-                                                <input type="file" name="image" value="" class="form-control" required data-validation-required-message="This field is required">
+                                                <img src="{{asset($subCategory->image)}}" width="100" alt="">
+                                                <input type="file" name="image" value="" class="form-control">
                                             </div>
                                             @if($errors->has('image'))
                                                 <div class="form-control-feedback">
@@ -135,7 +97,7 @@
                                             @endif
                                         </div>
                                         <div class="text-xs-right">
-                                            <input type="submit" class="btn btn-rounded btn-info" value="Submit">
+                                            <input type="submit" class="btn btn-rounded btn-info" value="Update Brand">
                                         </div>
                                     </div>
                                 </div>

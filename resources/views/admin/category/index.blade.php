@@ -6,13 +6,13 @@
         <div class="content-header">
             <div class="d-flex align-items-center">
                 <div class="mr-auto">
-                    <h3 class="page-title">All Brands</h3>
+                    <h3 class="page-title">All Categories</h3>
                     <div class="d-inline-block align-items-center">
                         <nav>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
                                 <li class="breadcrumb-item" aria-current="page">Dashboard</li>
-                                <li class="breadcrumb-item active" aria-current="page">All Brands</li>
+                                <li class="breadcrumb-item active" aria-current="page">All Categories</li>
                             </ol>
                         </nav>
                     </div>
@@ -29,7 +29,7 @@
 
                     <div class="box">
                         <div class="box-header with-border">
-                            <h3 class="box-title">All brands</h3>
+                            <h3 class="box-title">All categories</h3>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
@@ -37,6 +37,7 @@
                                 <table id="example1" class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
+                                        <th>#</th>
                                         <th>Name (EN)</th>
                                         <th>Name (FA)</th>
                                         <th>Image</th>
@@ -44,14 +45,15 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @forelse($brands as $key => $brand)
+                                    @forelse($categories as $key => $category)
                                         <tr>
-                                            <td>{{$brand->name}}</td>
-                                            <td>{{$brand->name_fa}}</td>
-                                            <td><img src="{{asset($brand->image)}}" width="70" alt="{{$brand->name}}"></td>
+                                            <td>{{$key+1}}</td>
+                                            <td>{{$category->name}}</td>
+                                            <td>{{$category->name_fa}}</td>
+                                            <td><img src="{{asset($category->image)}}" width="70" alt="{{$category->name}}"></td>
                                             <td>
-                                                <a href="{{route('admin.brands.edit',$brand->id)}}"  class="btn btn-sm btn-warning">Edit</a>
-                                                <form id="delete_brand_{{$brand->id}}" action="{{route('admin.brands.destroy',$brand->id)}}" method="post">
+                                                <a href="{{route('admin.categories.edit',$category->id)}}"  class="btn btn-sm btn-warning">Edit</a>
+                                                <form id="delete_brand_{{$category->id}}" action="{{route('admin.categories.destroy',$category->id)}}" method="post">
                                                     @csrf
                                                     @method('delete')
                                                     <input type="submit" onclick="deleteElement()" class="btn btn-sm btn-danger" value="Delete">
@@ -91,7 +93,7 @@
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
-                            <form method="post" action="{{route('admin.brands.store')}}" enctype="multipart/form-data">
+                            <form method="post" action="{{route('admin.categories.store')}}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="col-12">

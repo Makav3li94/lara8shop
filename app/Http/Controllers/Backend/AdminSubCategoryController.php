@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
+use App\Models\Category;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Image;
 
-class AdminBrandController extends Controller
+class AdminSubCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +17,8 @@ class AdminBrandController extends Controller
      */
     public function index()
     {
-        $brands = Brand::latest()->get();
-        return view('admin.brand.index', compact('brands'));
+        $categories = Category::latest()->get();
+        return view('admin.sub_category.index', compact('categories'));
     }
 
     /**
@@ -39,20 +40,22 @@ class AdminBrandController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            "category_id" => 'required|numeric',
             "name" => 'required|string',
             "name_fa" => 'required|string',
             "image" => 'mimes:jpeg,jpg,png,gif|required|max:10000',
         ], [
             'name.required' => 'Please Input brand En name',
-            'name_fa.required' => 'لطفا اسم فارسی برند را وارد کنید.'
+            'name_fa.required' => 'لطفا اسم فارسی دسته را وارد کنید.'
         ]);
 
         $image = $request->file('image');
         $image_name = time() . "." . $image->getClientOriginalExtension();
-        Image::make($image)->resize(300, 300)->save('upload/brands/' . $image_name);
-        $save_url = 'upload/brands/' . $image_name;
+        Image::make($image)->resize(300, 300)->save('upload/subcategories/' . $image_name);
+        $save_url = 'upload/subcategories/' . $image_name;
 
-        Brand::create([
+        SubCategory::create([
+            "category_id" => $request->category_id,
             "name" => $request->name,
             "name_fa" => $request->name_fa,
             "slug" => strtolower(str_replace(' ', '-', $request->name)),
@@ -61,19 +64,19 @@ class AdminBrandController extends Controller
         ]);
 
         $nofit = [
-            'message' => "Brand Created Successfully",
+            'message' => "SubCategory Created Successfully",
             "alert-type" => 'success',
         ];
-        return redirect()->route('admin.brands.index')->with($nofit);
+        return redirect()->route('admin.subcategories.index')->with($nofit);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\Brand $brand
+     * @param \App\Models\SubCategory $subCategory
      * @return \Illuminate\Http\Response
      */
-    public function show(Brand $brand)
+    public function show(SubCategory $subCategory)
     {
         //
     }
@@ -81,41 +84,48 @@ class AdminBrandController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Models\Brand $brand
+     * @param \App\Models\SubCategory $subCategory
      * @return \Illuminate\Http\Response
      */
-    public function edit(Brand $brand)
+    public function edit($id)
     {
-        return view('admin.brand.edit', compact('brand'));
+        $subCategory = SubCategory::findOrfail($id);
+        $categories = Category::latest()->get();
+        return view('admin.sub_category.edit', compact('subCategory', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Brand $brand
+     * @param \App\Models\SubCategory $subCategory
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Brand $brand)
+    public function update(Request $request, $id)
     {
+        $subCategory = SubCategory::findOrfail($id);
         $request->validate([
+            "category_id" => 'required|numeric',
             "name" => 'required|string',
             "name_fa" => 'required|string',
-            "image" => 'mimes:jpeg,jpg,png,gif|max:10000',
+            "image" => 'mimes:jpeg,jpg,png,gif|required|max:10000',
         ], [
             'name.required' => 'Please Input brand En name',
-            'name_fa.required' => 'لطفا اسم فارسی برند را وارد کنید.'
+            'name_fa.required' => 'لطفا اسم فارسی دسته را وارد کنید.'
         ]);
+
 
         if ($request->file('image')) {
 
-            unlink($brand->image);
+            unlink($subCategory->image);
             $image = $request->file('image');
             $image_name = time() . "." . $image->getClientOriginalExtension();
-            Image::make($image)->resize(300, 300)->save('upload/brands/' . $image_name);
-            $save_url = 'upload/brands/' . $image_name;
+            Image::make($image)->resize(300, 300)->save('upload/subcategories/' . $image_name);
+            $save_url = 'upload/subcategories/' . $image_name;
 
-            $brand->update([
+
+            $subCategory->update([
+                "category_id" => $request->category_id,
                 "name" => $request->name,
                 "name_fa" => $request->name_fa,
                 "slug" => strtolower(str_replace(' ', '-', $request->name)),
@@ -123,8 +133,9 @@ class AdminBrandController extends Controller
                 "image" => $save_url,
             ]);
 
-        }else{
-            $brand->update([
+        } else {
+            $subCategory->update([
+                "category_id" => $request->category_id,
                 "name" => $request->name,
                 "name_fa" => $request->name_fa,
                 "slug" => strtolower(str_replace(' ', '-', $request->name)),
@@ -132,28 +143,30 @@ class AdminBrandController extends Controller
             ]);
         }
 
+
         $nofit = [
-            'message' => "Brand Updated Successfully",
+            'message' => "SubCategory Created Successfully",
             "alert-type" => 'success',
         ];
-        return redirect()->route('admin.brands.index')->with($nofit);
+        return redirect()->route('admin.subcategories.index')->with($nofit);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\Brand $brand
+     * @param \App\Models\SubCategory $subCategory
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Brand $brand)
+    public function destroy($id)
     {
-        unlink($brand->image);
-        $brand->delete();
+        $subCategory = SubCategory::findOrfail($id);
+        unlink($subCategory->image);
+        $subCategory->delete();
         $nofit = [
-            'message' => "Brand Deleted Successfully",
+            'message' => "subCategory Deleted Successfully",
             "alert-type" => 'success',
         ];
 
-        return redirect()->route('admin.brands.index')->with($nofit);
+        return redirect()->route('admin.subcategories.index')->with($nofit);
     }
 }

@@ -15,7 +15,9 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(function () {
-        $(document).on('click','#delete',function (e) {
+        function deleteElement(e) {
+
+            var form = $(this).parents('form:first');
             e.preventDefault();
             var link = $(this).attr('href');
             Swal.fire({
@@ -28,7 +30,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $('form#delete_brand').submit();
+                    form.submit();
                     Swal.fire(
                         'Deleted!',
                         'Your file has been deleted.',
@@ -36,7 +38,8 @@
                     )
                 }
             })
-        })
+        }
+
     })
 </script>
 <script src="{{asset('backend/js/template.js')}}"></script>
@@ -44,21 +47,21 @@
 <script src="{{asset('backend/js/toastr.min.js')}}"></script>
 
 <script>
-    @if(session()->has('message'))
-        var type = "{{session()->get('alert-type','info')}}";
-        switch (type) {
-            case 'info':
-                toastr.info("{{session()->get('message')}}");
-                break;
-            case 'success':
-                toastr.success("{{session()->get('message')}}");
-                break;
-            case 'warning':
-                toastr.warning("{{session()->get('message')}}");
-                break;
-            case 'error':
-                toastr.error("{{session()->get('message')}}");
-                break;
-        }
+            @if(session()->has('message'))
+    var type = "{{session()->get('alert-type','info')}}";
+    switch (type) {
+        case 'info':
+            toastr.info("{{session()->get('message')}}");
+            break;
+        case 'success':
+            toastr.success("{{session()->get('message')}}");
+            break;
+        case 'warning':
+            toastr.warning("{{session()->get('message')}}");
+            break;
+        case 'error':
+            toastr.error("{{session()->get('message')}}");
+            break;
+    }
     @endif
 </script>

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Image;
 
-class AdminBrandController extends Controller
+class AdminCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class AdminBrandController extends Controller
      */
     public function index()
     {
-        $brands = Brand::latest()->get();
-        return view('admin.brand.index', compact('brands'));
+        $categories = Category::latest()->get();
+        return view('admin.category.index',compact('categories'));
     }
 
     /**
@@ -33,7 +33,7 @@ class AdminBrandController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -44,15 +44,15 @@ class AdminBrandController extends Controller
             "image" => 'mimes:jpeg,jpg,png,gif|required|max:10000',
         ], [
             'name.required' => 'Please Input brand En name',
-            'name_fa.required' => 'لطفا اسم فارسی برند را وارد کنید.'
+            'name_fa.required' => 'لطفا اسم فارسی دسته را وارد کنید.'
         ]);
 
         $image = $request->file('image');
         $image_name = time() . "." . $image->getClientOriginalExtension();
-        Image::make($image)->resize(300, 300)->save('upload/brands/' . $image_name);
-        $save_url = 'upload/brands/' . $image_name;
+        Image::make($image)->resize(300, 300)->save('upload/categories/' . $image_name);
+        $save_url = 'upload/categories/' . $image_name;
 
-        Brand::create([
+        Category::create([
             "name" => $request->name,
             "name_fa" => $request->name_fa,
             "slug" => strtolower(str_replace(' ', '-', $request->name)),
@@ -64,39 +64,39 @@ class AdminBrandController extends Controller
             'message' => "Brand Created Successfully",
             "alert-type" => 'success',
         ];
-        return redirect()->route('admin.brands.index')->with($nofit);
+        return redirect()->route('admin.categories.index')->with($nofit);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\Brand $brand
+     * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function show(Brand $brand)
+    public function show(Category $category)
     {
-        //
+
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Models\Brand $brand
+     * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function edit(Brand $brand)
+    public function edit(Category $category)
     {
-        return view('admin.brand.edit', compact('brand'));
+        return view('admin.category.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Brand $brand
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Brand $brand)
+    public function update(Request $request, Category $category)
     {
         $request->validate([
             "name" => 'required|string',
@@ -109,13 +109,13 @@ class AdminBrandController extends Controller
 
         if ($request->file('image')) {
 
-            unlink($brand->image);
+            unlink($category->image);
             $image = $request->file('image');
             $image_name = time() . "." . $image->getClientOriginalExtension();
-            Image::make($image)->resize(300, 300)->save('upload/brands/' . $image_name);
-            $save_url = 'upload/brands/' . $image_name;
+            Image::make($image)->resize(300, 300)->save('upload/categories/' . $image_name);
+            $save_url = 'upload/categories/' . $image_name;
 
-            $brand->update([
+            $category->update([
                 "name" => $request->name,
                 "name_fa" => $request->name_fa,
                 "slug" => strtolower(str_replace(' ', '-', $request->name)),
@@ -124,7 +124,7 @@ class AdminBrandController extends Controller
             ]);
 
         }else{
-            $brand->update([
+            $category->update([
                 "name" => $request->name,
                 "name_fa" => $request->name_fa,
                 "slug" => strtolower(str_replace(' ', '-', $request->name)),
@@ -133,27 +133,27 @@ class AdminBrandController extends Controller
         }
 
         $nofit = [
-            'message' => "Brand Updated Successfully",
+            'message' => "Category Updated Successfully",
             "alert-type" => 'success',
         ];
-        return redirect()->route('admin.brands.index')->with($nofit);
+        return redirect()->route('admin.categories.index')->with($nofit);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\Brand $brand
+     * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Brand $brand)
+    public function destroy(Category $category)
     {
-        unlink($brand->image);
-        $brand->delete();
+        unlink($category->image);
+        $category->delete();
         $nofit = [
-            'message' => "Brand Deleted Successfully",
+            'message' => "Category Deleted Successfully",
             "alert-type" => 'success',
         ];
 
-        return redirect()->route('admin.brands.index')->with($nofit);
+        return redirect()->route('admin.categories.index')->with($nofit);
     }
 }

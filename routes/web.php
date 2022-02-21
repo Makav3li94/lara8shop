@@ -42,6 +42,8 @@ Route::group(['prefix'=>'admin'],function (){
     Route::post('/update/password', [AdminProfileController::class, 'updatePassword'])->name('admin.update.password');
 
     Route::resource('brands', AdminBrandController::class, ['names' => 'admin.brands']);
+    Route::resource('categories', \App\Http\Controllers\Backend\AdminCategoryController::class, ['names' => 'admin.categories']);
+    Route::resource('subcategories', \App\Http\Controllers\Backend\AdminSubCategoryController::class, ['names' => 'admin.subcategories']);
 });
 
 // User All Routes
