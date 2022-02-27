@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\AdminSubSubCategoryController;
 use App\Http\Controllers\Frontend\IndexController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
@@ -44,6 +45,8 @@ Route::group(['prefix'=>'admin'],function (){
     Route::resource('brands', AdminBrandController::class, ['names' => 'admin.brands']);
     Route::resource('categories', \App\Http\Controllers\Backend\AdminCategoryController::class, ['names' => 'admin.categories']);
     Route::resource('subcategories', \App\Http\Controllers\Backend\AdminSubCategoryController::class, ['names' => 'admin.subcategories']);
+    Route::resource('subsubcategories', \App\Http\Controllers\Backend\AdminSubSubCategoryController::class, ['names' => 'admin.subsubcategories']);
+    Route::get('subsubcategories/ajax/{category_id}', [AdminSubSubCategoryController::class, 'ajax'])->name('admin.subsubcategories.ajax');;
 });
 
 // User All Routes

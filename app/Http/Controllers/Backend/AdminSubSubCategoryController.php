@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\SubCategory;
+use App\Models\SubSubCategory;
 use Illuminate\Http\Request;
 use Image;
 
-class AdminSubCategoryController extends Controller
+class AdminSubSubCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,7 +19,9 @@ class AdminSubCategoryController extends Controller
     public function index()
     {
         $categories = Category::latest()->get();
-        return view('admin.sub_category.index', compact('categories'));
+        $subcategories = SubCategory::latest()->get();
+        $subsubcategories = SubSubCategory::latest()->get();
+        return view('admin.sub_sub_category.index', compact('categories','subcategories','subsubcategories'));
     }
 
     /**
@@ -34,13 +37,14 @@ class AdminSubCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $request->validate([
             "category_id" => 'required|numeric',
+            "sub_category_id" => 'required|numeric',
             "name" => 'required|string',
             "name_fa" => 'required|string',
             "image" => 'mimes:jpeg,jpg,png,gif|required|max:10000',
@@ -51,11 +55,12 @@ class AdminSubCategoryController extends Controller
 
         $image = $request->file('image');
         $image_name = time() . "." . $image->getClientOriginalExtension();
-        Image::make($image)->resize(300, 300)->save('upload/subcategories/' . $image_name);
-        $save_url = 'upload/subcategories/' . $image_name;
+        Image::make($image)->resize(300, 300)->save('upload/subsubcategories/' . $image_name);
+        $save_url = 'upload/subsubcategories/' . $image_name;
 
-        SubCategory::create([
+        SubSubCategory::create([
             "category_id" => $request->category_id,
+            "sub_category_id" => $request->sub_category_id,
             "name" => $request->name,
             "name_fa" => $request->name_fa,
             "slug" => strtolower(str_replace(' ', '-', $request->name)),
@@ -64,19 +69,19 @@ class AdminSubCategoryController extends Controller
         ]);
 
         $nofit = [
-            'message' => "SubCategory Created Successfully",
+            'message' => "Sub SubCategory Created Successfully",
             "alert-type" => 'success',
         ];
-        return redirect()->route('admin.subcategories.index')->with($nofit);
+        return redirect()->route('admin.subsubcategories.index')->with($nofit);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\SubCategory $subCategory
+     * @param  \App\Models\SubSubCategory  $subSubCategory
      * @return \Illuminate\Http\Response
      */
-    public function show(SubCategory $subCategory)
+    public function show(SubSubCategory $subSubCategory)
     {
         //
     }
@@ -84,28 +89,29 @@ class AdminSubCategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Models\SubCategory $subCategory
+     * @param  \App\Models\SubSubCategory  $subSubCategory
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $subCategory = SubCategory::findOrfail($id);
+        $subsubCategory = SubSubCategory::findOrfail($id);
         $categories = Category::latest()->get();
-        return view('admin.sub_category.edit', compact('subCategory', 'categories'));
+        return view('admin.sub_sub_category.edit', compact('subsubCategory', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\SubCategory $subCategory
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\SubSubCategory  $subSubCategory
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $subCategory = SubCategory::findOrfail($id);
+        $subsubCategory = SubSubCategory::findOrfail($id);
         $request->validate([
             "category_id" => 'required|numeric',
+            "sub_category_id" => 'required|numeric',
             "name" => 'required|string',
             "name_fa" => 'required|string',
             "image" => 'mimes:jpeg,jpg,png,gif|max:10000',
@@ -117,15 +123,16 @@ class AdminSubCategoryController extends Controller
 
         if ($request->file('image')) {
 
-            unlink($subCategory->image);
+            unlink($subsubCategory->image);
             $image = $request->file('image');
             $image_name = time() . "." . $image->getClientOriginalExtension();
             Image::make($image)->resize(300, 300)->save('upload/subcategories/' . $image_name);
             $save_url = 'upload/subcategories/' . $image_name;
 
 
-            $subCategory->update([
+            $subsubCategory->update([
                 "category_id" => $request->category_id,
+                "sub_category_id" => $request->sub_category_id,
                 "name" => $request->name,
                 "name_fa" => $request->name_fa,
                 "slug" => strtolower(str_replace(' ', '-', $request->name)),
@@ -134,8 +141,9 @@ class AdminSubCategoryController extends Controller
             ]);
 
         } else {
-            $subCategory->update([
+            $subsubCategory->update([
                 "category_id" => $request->category_id,
+                "sub_category_id" => $request->sub_category_id,
                 "name" => $request->name,
                 "name_fa" => $request->name_fa,
                 "slug" => strtolower(str_replace(' ', '-', $request->name)),
@@ -148,25 +156,30 @@ class AdminSubCategoryController extends Controller
             'message' => "SubCategory Created Successfully",
             "alert-type" => 'success',
         ];
-        return redirect()->route('admin.subcategories.index')->with($nofit);
+        return redirect()->route('admin.subsubcategories.index')->with($nofit);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\SubCategory $subCategory
+     * @param  \App\Models\SubSubCategory  $subSubCategory
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $subCategory = SubCategory::findOrfail($id);
-        unlink($subCategory->image);
-        $subCategory->delete();
+        $subsubCategory = SubSubCategory::findOrfail($id);
+        unlink($subsubCategory->image);
+        $subsubCategory->delete();
         $nofit = [
-            'message' => "subCategory Deleted Successfully",
+            'message' => "Sub subCategory Deleted Successfully",
             "alert-type" => 'success',
         ];
 
-        return redirect()->route('admin.subcategories.index')->with($nofit);
+        return redirect()->route('admin.subsubcategories.index')->with($nofit);
+    }
+
+    public function ajax($category_id){
+        $subCategories = SubCategory::where('category_id',$category_id)->pluck('name','id');
+        return $subCategories;
     }
 }
