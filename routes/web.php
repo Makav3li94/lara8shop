@@ -47,6 +47,11 @@ Route::group(['prefix'=>'admin'],function (){
     Route::resource('subcategories', \App\Http\Controllers\Backend\AdminSubCategoryController::class, ['names' => 'admin.subcategories']);
     Route::resource('subsubcategories', \App\Http\Controllers\Backend\AdminSubSubCategoryController::class, ['names' => 'admin.subsubcategories']);
     Route::get('subsubcategories/ajax/{category_id}', [AdminSubSubCategoryController::class, 'ajax'])->name('admin.subsubcategories.ajax');;
+    Route::get('subsubcategories/getsubsub/{sub_category_id}', [AdminSubSubCategoryController::class, 'getSubSub'])->name('admin.subsubcategories.getsubsub');;
+
+    Route::resource('products', \App\Http\Controllers\Backend\AdminProductController::class, ['names' => 'admin.products']);
+    Route::resource('sliders', \App\Http\Controllers\Backend\AdminSliderController::class, ['names' => 'admin.sliders']);
+
 });
 
 // User All Routes

@@ -10,9 +10,21 @@
 
     // Replace the <textarea id="editor1"> with a CKEditor
 	// instance, using default configuration.
-	CKEDITOR.replace('editor1')
+	CKEDITOR.replace('description')
 	//bootstrap WYSIHTML5 - text editor
 	$('.textarea').wysihtml5();		
 	
   });
+$(function () {
+    "use strict";
+
+    // Replace the <textarea id="editor1"> with a CKEditor
+    // instance, using default configuration.
+    CKEDITOR.replace('description_fa')
+    //bootstrap WYSIHTML5 - text editor
+    $('.textarea').wysihtml5();
+
+});
+
+
 

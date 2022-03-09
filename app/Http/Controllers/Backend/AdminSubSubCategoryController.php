@@ -182,4 +182,9 @@ class AdminSubSubCategoryController extends Controller
         $subCategories = SubCategory::where('category_id',$category_id)->pluck('name','id');
         return $subCategories;
     }
+
+    public function getSubSub($sub_category_id){
+        $subSubCategories = SubSubCategory::where('sub_category_id',$sub_category_id)->pluck('name','id');
+        return $subSubCategories;
+    }
 }
